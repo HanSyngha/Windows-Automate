@@ -9,6 +9,7 @@ mod llm;
 mod screen;
 
 use tauri::Manager;
+use tauri::tray::TrayIconEvent;
 
 /// Application entry point
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -28,6 +29,19 @@ pub fn run() {
                 window.open_devtools();
             }
             Ok(())
+        })
+        // Tray icon click handler
+        .on_tray_icon_event(|tray, event| {
+            if let TrayIconEvent::Click { button, .. } = event {
+                if button == tauri::tray::MouseButton::Left {
+                    let app = tray.app_handle();
+                    if let Some(window) = app.get_webview_window("main") {
+                        let _ = window.show();
+                        let _ = window.unminimize();
+                        let _ = window.set_focus();
+                    }
+                }
+            }
         })
         // Commands
         .invoke_handler(tauri::generate_handler![
