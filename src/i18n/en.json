@@ -1,0 +1,91 @@
+{
+  "welcome": {
+    "message": "Hello! I'm AutoMate. I can see your screen and control mouse & keyboard to help you with tasks.",
+    "hint": "Example: \"Open Notepad and type 'Hello World'\" or \"Search Google in Chrome\""
+  },
+  "input": {
+    "placeholder": "What can I help you with?",
+    "status": "AI is standing by",
+    "processing": "Processing..."
+  },
+  "chat": {
+    "processing": "Thinking...",
+    "clear": "Clear chat"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "guide": {
+    "add": {
+      "title": "Add Guide",
+      "description": "Describe the guide in natural language. AI will automatically convert it to a structured guide.",
+      "placeholder": "Example: How to upload a video on YouTube. First, log in to YouTube Studio, click the Create button in the top right corner...",
+      "create": "Create Guide",
+      "creating": "Creating...",
+      "success": "Guide created successfully!"
+    },
+    "button": "Add Guide"
+  },
+  "settings": {
+    "title": "Settings",
+    "api": {
+      "title": "API Settings",
+      "endpoint": "Endpoint URL",
+      "endpointHint": "OpenAI compatible API endpoint",
+      "apiKey": "API Key",
+      "key": "API Key",
+      "keyHint": "API key is stored encrypted",
+      "model": "Model",
+      "modelHint": "Model name to use",
+      "vision": "Vision Support",
+      "supportsVision": "Vision API Support (Send screenshots)",
+      "visionHint": "Send screenshots to LLM",
+      "maxTokens": "Max Tokens",
+      "temperature": "Temperature",
+      "test": "Test Connection",
+      "testConnection": "Test Connection",
+      "testing": "Testing...",
+      "success": "Connection successful!",
+      "failed": "Connection failed"
+    },
+    "language": {
+      "title": "Language"
+    },
+    "shortcut": {
+      "title": "Global Shortcut"
+    },
+    "general": {
+      "title": "General Settings",
+      "language": "Language",
+      "theme": "Theme",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "status": {
+    "idle": "Idle",
+    "thinking": "Thinking...",
+    "acting": "Working...",
+    "moving": "Moving mouse",
+    "clicking": "Clicking",
+    "typing": "Typing",
+    "stopped": "Stopped",
+    "error": "Error occurred"
+  },
+  "actions": {
+    "start": "Start",
+    "stop": "Stop",
+    "pause": "Pause",
+    "resume": "Resume"
+  },
+  "errors": {
+    "apiNotConfigured": "API is not configured. Please configure API in settings.",
+    "connectionFailed": "Failed to connect to server.",
+    "invalidResponse": "Received invalid response.",
+    "userInterrupted": "User interrupted the operation."
+  }
+}

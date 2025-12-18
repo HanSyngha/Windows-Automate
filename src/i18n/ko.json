@@ -1,0 +1,91 @@
+{
+  "welcome": {
+    "message": "안녕하세요! AutoMate입니다. 화면을 보고 마우스와 키보드를 제어해서 작업을 도와드릴 수 있어요.",
+    "hint": "예: \"메모장을 열어서 '안녕하세요'를 입력해줘\" 또는 \"크롬에서 구글 검색해줘\""
+  },
+  "input": {
+    "placeholder": "무엇을 도와드릴까요?",
+    "status": "AI가 대기 중입니다",
+    "processing": "처리 중..."
+  },
+  "chat": {
+    "processing": "생각하는 중...",
+    "clear": "대화 지우기"
+  },
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "close": "닫기"
+  },
+  "guide": {
+    "add": {
+      "title": "가이드 추가",
+      "description": "작업에 대한 가이드를 자연어로 설명해주세요. AI가 자동으로 구조화된 가이드로 변환합니다.",
+      "placeholder": "예: YouTube에서 동영상을 업로드하는 방법. 먼저 YouTube Studio에 로그인하고, 우측 상단의 만들기 버튼을 클릭한 후...",
+      "create": "가이드 생성",
+      "creating": "생성 중...",
+      "success": "가이드가 생성되었습니다!"
+    },
+    "button": "가이드 추가"
+  },
+  "settings": {
+    "title": "설정",
+    "api": {
+      "title": "API 설정",
+      "endpoint": "엔드포인트 URL",
+      "endpointHint": "OpenAI 호환 API 엔드포인트",
+      "apiKey": "API 키",
+      "key": "API 키",
+      "keyHint": "API 키는 암호화되어 저장됩니다",
+      "model": "모델",
+      "modelHint": "사용할 모델 이름",
+      "vision": "Vision 지원",
+      "supportsVision": "Vision API 지원 (스크린샷 전송)",
+      "visionHint": "스크린샷을 LLM에 전송",
+      "maxTokens": "최대 토큰",
+      "temperature": "Temperature",
+      "test": "연결 테스트",
+      "testConnection": "연결 테스트",
+      "testing": "테스트 중...",
+      "success": "연결 성공!",
+      "failed": "연결 실패"
+    },
+    "language": {
+      "title": "언어"
+    },
+    "shortcut": {
+      "title": "글로벌 단축키"
+    },
+    "general": {
+      "title": "일반 설정",
+      "language": "언어",
+      "theme": "테마",
+      "dark": "다크",
+      "light": "라이트"
+    },
+    "save": "저장",
+    "cancel": "취소"
+  },
+  "status": {
+    "idle": "대기 중",
+    "thinking": "생각 중...",
+    "acting": "작업 중...",
+    "moving": "마우스 이동 중",
+    "clicking": "클릭 중",
+    "typing": "입력 중",
+    "stopped": "중단됨",
+    "error": "오류 발생"
+  },
+  "actions": {
+    "start": "시작",
+    "stop": "중단",
+    "pause": "일시정지",
+    "resume": "재개"
+  },
+  "errors": {
+    "apiNotConfigured": "API가 설정되지 않았습니다. 설정에서 API를 구성해주세요.",
+    "connectionFailed": "서버 연결에 실패했습니다.",
+    "invalidResponse": "잘못된 응답을 받았습니다.",
+    "userInterrupted": "사용자가 작업을 중단했습니다."
+  }
+}
