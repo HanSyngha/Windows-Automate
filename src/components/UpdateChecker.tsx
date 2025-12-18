@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { Download, X, RefreshCw } from 'lucide-react';
-import { check } from '@tauri-apps/plugin-updater';
+import { check, type DownloadEvent } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 
 interface UpdateInfo {
@@ -46,10 +46,11 @@ export function UpdateChecker() {
       const update = await check();
 
       if (update?.available) {
-        await update.downloadAndInstall((progress) => {
+        await update.downloadAndInstall((progress: DownloadEvent) => {
           if (progress.event === 'Progress') {
+            const data = progress.data as { chunkLength?: number; contentLength?: number };
             const percent = Math.round(
-              ((progress.data.chunkLength || 0) / (progress.data.contentLength || 1)) * 100
+              ((data.chunkLength || 0) / (data.contentLength || 1)) * 100
             );
             setDownloadProgress(percent);
           }

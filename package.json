@@ -15,6 +15,7 @@
     "@tauri-apps/plugin-os": "^2",
     "@tauri-apps/plugin-process": "^2",
     "@tauri-apps/plugin-shell": "^2",
+    "@tauri-apps/plugin-updater": "^2.9.0",
     "i18next": "^24",
     "lucide-react": "^0.460",
     "motion": "^12.23",

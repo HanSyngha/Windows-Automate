@@ -64,10 +64,10 @@
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": ""
-    },
-    "nsis": {
-      "installMode": "currentUser"
+      "timestampUrl": "",
+      "nsis": {
+        "installMode": "currentUser"
+      }
     }
   },
   "plugins": {
