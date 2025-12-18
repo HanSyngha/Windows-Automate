@@ -64,16 +64,10 @@
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": "",
-      "nsis": {
-        "license": "../LICENSE",
-        "installerIcon": "icons/icon.ico",
-        "headerImage": "icons/header.bmp",
-        "sidebarImage": "icons/sidebar.bmp",
-        "installMode": "currentUser",
-        "languages": ["English", "Korean"],
-        "displayLanguageSelector": true
-      }
+      "timestampUrl": ""
+    },
+    "nsis": {
+      "installMode": "currentUser"
     }
   },
   "plugins": {
