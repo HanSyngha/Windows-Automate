@@ -11,8 +11,9 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![Rust](https://img.shields.io/badge/Rust-1.70+-orange?logo=rust)](https://rust-lang.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](https://typescriptlang.org)
+[![Release](https://img.shields.io/github/v/release/HanSyngha/Windows-Automate?include_prereleases)](https://github.com/HanSyngha/Windows-Automate/releases)
 
-[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Development](#development) • [Contributing](#contributing)
+[Download](#download) • [Features](#features) • [Usage](#usage) • [Development](#development) • [Contributing](#contributing)
 
 </div>
 
@@ -69,7 +70,29 @@ See exactly what the AI is doing with real-time visual feedback:
 
 ---
 
-## Installation
+## Download
+
+### For Users
+
+**No installation of Node.js or Rust required!** Just download and run the installer.
+
+1. Go to [Releases](https://github.com/HanSyngha/Windows-Automate/releases)
+2. Download the latest `AutoMate_x.x.x_x64-setup.exe`
+3. Run the installer and follow the setup wizard
+4. Launch AutoMate from the Start Menu
+
+**System Requirements:**
+- Windows 10/11 (64-bit)
+- Internet connection for AI features
+- OpenAI API key (or compatible API)
+
+### Auto-Update
+
+AutoMate automatically checks for updates on startup. When a new version is available, you'll see a notification with the option to download and install immediately.
+
+---
+
+## Installation (For Developers)
 
 ### Prerequisites
 
@@ -215,6 +238,22 @@ Create `.env` file for development:
 ```env
 VITE_DEFAULT_API_ENDPOINT=https://api.openai.com/v1
 ```
+
+### Creating a Release
+
+Releases are automated via GitHub Actions. To create a new release:
+
+1. Update version in `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`
+2. Commit the version change
+3. Create and push a git tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+4. GitHub Actions will automatically build and create a draft release
+5. Review and publish the release on GitHub
 
 ---
 

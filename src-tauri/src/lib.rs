@@ -19,6 +19,7 @@ pub fn run() {
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_global_shortcut::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         // Setup
         .setup(|app| {
             #[cfg(debug_assertions)]

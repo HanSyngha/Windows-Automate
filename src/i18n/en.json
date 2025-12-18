@@ -87,5 +87,13 @@
     "connectionFailed": "Failed to connect to server.",
     "invalidResponse": "Received invalid response.",
     "userInterrupted": "User interrupted the operation."
+  },
+  "update": {
+    "available": "Update Available",
+    "version": "Version {{version}} is available",
+    "downloading": "Downloading...",
+    "installing": "Installing update...",
+    "install": "Install Now",
+    "later": "Later"
   }
 }

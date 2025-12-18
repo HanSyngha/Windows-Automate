@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          toolchain: stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: v__VERSION__
+          releaseName: 'AutoMate v__VERSION__'
+          releaseBody: |
+            ## What's New
+
+            See the [CHANGELOG](https://github.com/HanSyngha/Windows-Automate/blob/main/CHANGELOG.md) for details.
+
+            ## Installation
+
+            1. Download `AutoMate_x.x.x_x64-setup.exe` (NSIS installer, recommended)
+            2. Run the installer
+            3. Follow the setup wizard
+
+            ## Requirements
+
+            - Windows 10/11 (64-bit)
+            - Internet connection for AI features
+
+            ---
+
+            **Note**: Windows SmartScreen may show a warning on first run. Click "More info" → "Run anyway" to proceed.
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: true
+          updaterJsonPreferNsis: true
+
+  update-latest-json:
+    needs: build-windows
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: ./artifacts
+
+      - name: Generate latest.json
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          cat > latest.json << EOF
+          {
+            "version": "$VERSION",
+            "notes": "See https://github.com/HanSyngha/Windows-Automate/releases/tag/v$VERSION for details",
+            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "platforms": {
+              "windows-x86_64": {
+                "signature": "",
+                "url": "https://github.com/HanSyngha/Windows-Automate/releases/download/v$VERSION/AutoMate_${VERSION}_x64-setup.nsis.zip"
+              }
+            }
+          }
+          EOF
+
+      - name: Upload latest.json to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: latest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

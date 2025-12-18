@@ -5,6 +5,7 @@ import { Chat } from './components/Chat';
 import { Settings } from './components/Settings';
 import { AddGuide } from './components/AddGuide';
 import { ToastContainer } from './components/Toast';
+import { UpdateChecker } from './components/UpdateChecker';
 import { useConfigStore } from './stores/configStore';
 
 function App() {
@@ -68,6 +69,9 @@ function App() {
 
       {/* Toast Notifications */}
       <ToastContainer />
+
+      {/* Update Checker */}
+      <UpdateChecker />
     </div>
   );
 }

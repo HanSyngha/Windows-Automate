@@ -87,5 +87,13 @@
     "connectionFailed": "서버 연결에 실패했습니다.",
     "invalidResponse": "잘못된 응답을 받았습니다.",
     "userInterrupted": "사용자가 작업을 중단했습니다."
+  },
+  "update": {
+    "available": "업데이트 가능",
+    "version": "버전 {{version}}이(가) 사용 가능합니다",
+    "downloading": "다운로드 중...",
+    "installing": "업데이트 설치 중...",
+    "install": "지금 설치",
+    "later": "나중에"
   }
 }
