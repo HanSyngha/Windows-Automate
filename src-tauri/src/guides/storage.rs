@@ -43,7 +43,7 @@ pub fn list_guides(subpath: Option<&str>) -> Result<Vec<GuideEntry>> {
     let guides_dir = get_guides_dir()?;
     let target_dir = match subpath {
         Some(p) => guides_dir.join(p.trim_start_matches('/')),
-        None => guides_dir,
+        None => guides_dir.clone(),
     };
 
     if !target_dir.exists() {

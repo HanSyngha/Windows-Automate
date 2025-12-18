@@ -2,7 +2,7 @@
 
 use anyhow::Result;
 use base64::{engine::general_purpose::STANDARD, Engine};
-use image::{ImageBuffer, Rgba};
+use image::{ImageBuffer, ImageEncoder, Rgba};
 use windows::Win32::Foundation::*;
 use windows::Win32::Graphics::Gdi::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
@@ -15,15 +15,15 @@ pub fn capture_screen_base64() -> Result<String> {
         let height = GetSystemMetrics(SM_CYSCREEN);
 
         // Get device context
-        let hdc_screen = GetDC(HWND::default());
+        let hdc_screen = GetDC(None);
         if hdc_screen.is_invalid() {
             return Err(anyhow::anyhow!("Failed to get screen DC"));
         }
 
         // Create compatible DC
-        let hdc_mem = CreateCompatibleDC(hdc_screen);
+        let hdc_mem = CreateCompatibleDC(Some(hdc_screen));
         if hdc_mem.is_invalid() {
-            ReleaseDC(HWND::default(), hdc_screen);
+            ReleaseDC(None, hdc_screen);
             return Err(anyhow::anyhow!("Failed to create compatible DC"));
         }
 
@@ -31,15 +31,15 @@ pub fn capture_screen_base64() -> Result<String> {
         let hbitmap = CreateCompatibleBitmap(hdc_screen, width, height);
         if hbitmap.is_invalid() {
             DeleteDC(hdc_mem);
-            ReleaseDC(HWND::default(), hdc_screen);
+            ReleaseDC(None, hdc_screen);
             return Err(anyhow::anyhow!("Failed to create bitmap"));
         }
 
         // Select bitmap into DC
-        let old_bitmap = SelectObject(hdc_mem, hbitmap);
+        let old_bitmap = SelectObject(hdc_mem, hbitmap.into());
 
         // Copy screen to bitmap
-        let _ = BitBlt(hdc_mem, 0, 0, width, height, hdc_screen, 0, 0, SRCCOPY);
+        let _ = BitBlt(hdc_mem, 0, 0, width, height, Some(hdc_screen), 0, 0, SRCCOPY);
 
         // Get bitmap bits
         let mut bitmap_info = BITMAPINFO {
@@ -69,9 +69,8 @@ pub fn capture_screen_base64() -> Result<String> {
 
         // Cleanup
         SelectObject(hdc_mem, old_bitmap);
-        DeleteObject(hbitmap);
         DeleteDC(hdc_mem);
-        ReleaseDC(HWND::default(), hdc_screen);
+        ReleaseDC(None, hdc_screen);
 
         // Convert BGRA to RGBA
         for chunk in pixels.chunks_exact_mut(4) {
@@ -86,7 +85,7 @@ pub fn capture_screen_base64() -> Result<String> {
         // Encode to PNG
         let mut png_data = Vec::new();
         let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
-        encoder.encode(
+        encoder.write_image(
             img.as_raw(),
             width as u32,
             height as u32,
