@@ -67,7 +67,7 @@ jobs:
             ---
 
             **Note**: Windows SmartScreen may show a warning on first run. Click "More info" → "Run anyway" to proceed.
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
