@@ -39,7 +39,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
   const handleTest = async () => {
     setTestStatus('testing');
     try {
-      const result = await testConnection();
+      const result = await testConnection(localConfig.api);
       setTestStatus('success');
       setTestMessage(result);
     } catch (e) {

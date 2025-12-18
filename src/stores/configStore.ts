@@ -29,7 +29,7 @@ interface ConfigState {
   loadConfig: () => Promise<void>;
   saveConfig: (config: AppConfig) => Promise<void>;
   updateApi: (api: Partial<ApiConfig>) => void;
-  testConnection: () => Promise<string>;
+  testConnection: (apiConfig?: ApiConfig) => Promise<string>;
 }
 
 const defaultConfig: AppConfig = {
@@ -83,10 +83,11 @@ export const useConfigStore = create<ConfigState>()(
         });
       },
 
-      testConnection: async () => {
+      testConnection: async (apiConfig?: ApiConfig) => {
         const { config } = get();
+        const testConfig = apiConfig || config.api;
         try {
-          const result = await invoke<string>('test_api_connection', { config: config.api });
+          const result = await invoke<string>('test_api_connection', { config: testConfig });
           return result;
         } catch (e) {
           throw new Error(String(e));

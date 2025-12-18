@@ -1,6 +1,7 @@
 // Chat store using Zustand 5.0
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { invoke } from '@tauri-apps/api/core';
 
 export interface Message {
@@ -58,10 +59,12 @@ const updateOverlayCursor = async (x: number, y: number) => {
   }
 };
 
-export const useChatStore = create<ChatState>()((set, get) => ({
-  messages: [],
-  isProcessing: false,
-  error: null,
+export const useChatStore = create<ChatState>()(
+  persist(
+    (set, get) => ({
+      messages: [],
+      isProcessing: false,
+      error: null,
 
   sendMessage: async (content: string, includeScreen = true) => {
     const { addMessage } = get();
@@ -215,4 +218,10 @@ export const useChatStore = create<ChatState>()((set, get) => ({
       throw e;
     }
   },
-}));
+    }),
+    {
+      name: 'automate-chat-history',
+      partialize: (state) => ({ messages: state.messages }),
+    }
+  )
+);
