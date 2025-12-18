@@ -11,11 +11,7 @@ pub enum OverlayEvent {
     CursorMove { x: i32, y: i32 },
 
     #[serde(rename = "click")]
-    Click {
-        x: i32,
-        y: i32,
-        button: String,
-    },
+    Click { x: i32, y: i32, button: String },
 
     #[serde(rename = "status")]
     Status {
@@ -74,7 +70,9 @@ pub async fn overlay_cursor_move(app: AppHandle, x: i32, y: i32) -> Result<(), S
             "type": "cursor_move",
             "payload": { "x": x, "y": y }
         });
-        window.emit("overlay-event", event).map_err(|e| e.to_string())?;
+        window
+            .emit("overlay-event", event)
+            .map_err(|e| e.to_string())?;
     }
     Ok(())
 }
@@ -96,7 +94,9 @@ pub async fn overlay_click(
                 "button": button.unwrap_or_else(|| "left".to_string())
             }
         });
-        window.emit("overlay-event", event).map_err(|e| e.to_string())?;
+        window
+            .emit("overlay-event", event)
+            .map_err(|e| e.to_string())?;
     }
     Ok(())
 }
@@ -116,7 +116,9 @@ pub async fn overlay_status(
                 "message": message
             }
         });
-        window.emit("overlay-event", event).map_err(|e| e.to_string())?;
+        window
+            .emit("overlay-event", event)
+            .map_err(|e| e.to_string())?;
     }
     Ok(())
 }
@@ -129,7 +131,9 @@ pub async fn overlay_set_control(app: AppHandle, controlling: bool) -> Result<()
             "type": "control",
             "payload": { "controlling": controlling }
         });
-        window.emit("overlay-event", event).map_err(|e| e.to_string())?;
+        window
+            .emit("overlay-event", event)
+            .map_err(|e| e.to_string())?;
     }
 
     // Also show/hide overlay based on control state

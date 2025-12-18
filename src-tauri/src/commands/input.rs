@@ -18,11 +18,9 @@ pub async fn mouse_move(x: i32, y: i32, smooth: Option<bool>) -> Result<(), Stri
     {
         let use_smooth = smooth.unwrap_or(true);
         if use_smooth {
-            crate::input::mouse::smooth_move(x, y, 300)
-                .map_err(|e| e.to_string())
+            crate::input::mouse::smooth_move(x, y, 300).map_err(|e| e.to_string())
         } else {
-            crate::input::mouse::instant_move(x, y)
-                .map_err(|e| e.to_string())
+            crate::input::mouse::instant_move(x, y).map_err(|e| e.to_string())
         }
     }
     #[cfg(not(windows))]
@@ -43,8 +41,7 @@ pub async fn mouse_click(
     {
         let btn = button.unwrap_or(MouseButton::Left);
         let is_double = double.unwrap_or(false);
-        crate::input::mouse::click(x, y, btn, is_double)
-            .map_err(|e| e.to_string())
+        crate::input::mouse::click(x, y, btn, is_double).map_err(|e| e.to_string())
     }
     #[cfg(not(windows))]
     {
@@ -58,8 +55,7 @@ pub async fn keyboard_type(text: &str, delay_ms: Option<u64>) -> Result<(), Stri
     #[cfg(windows)]
     {
         let delay = delay_ms.unwrap_or(30);
-        crate::input::keyboard::type_text(text, delay)
-            .map_err(|e| e.to_string())
+        crate::input::keyboard::type_text(text, delay).map_err(|e| e.to_string())
     }
     #[cfg(not(windows))]
     {
@@ -72,8 +68,7 @@ pub async fn keyboard_type(text: &str, delay_ms: Option<u64>) -> Result<(), Stri
 pub async fn keyboard_press(keys: Vec<String>) -> Result<(), String> {
     #[cfg(windows)]
     {
-        crate::input::keyboard::press_keys(&keys)
-            .map_err(|e| e.to_string())
+        crate::input::keyboard::press_keys(&keys).map_err(|e| e.to_string())
     }
     #[cfg(not(windows))]
     {

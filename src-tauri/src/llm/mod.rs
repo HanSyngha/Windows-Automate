@@ -1,4 +1,4 @@
 // LLM integration module
 
-pub mod client;
 pub mod agent;
+pub mod client;

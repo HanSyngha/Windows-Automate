@@ -28,8 +28,7 @@ pub struct BoundingRect {
 pub async fn capture_screen() -> Result<String, String> {
     #[cfg(windows)]
     {
-        crate::screen::capture::capture_screen_base64()
-            .map_err(|e| e.to_string())
+        crate::screen::capture::capture_screen_base64().map_err(|e| e.to_string())
     }
     #[cfg(not(windows))]
     {
@@ -43,8 +42,7 @@ pub async fn get_ui_tree(max_depth: Option<usize>) -> Result<UIElement, String> 
     #[cfg(windows)]
     {
         let depth = max_depth.unwrap_or(3);
-        crate::screen::ui_automation::get_active_window_tree(depth)
-            .map_err(|e| e.to_string())
+        crate::screen::ui_automation::get_active_window_tree(depth).map_err(|e| e.to_string())
     }
     #[cfg(not(windows))]
     {

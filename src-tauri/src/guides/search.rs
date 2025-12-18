@@ -99,10 +99,7 @@ fn execute_guide_tool(name: &str, args: &serde_json::Value) -> String {
             }
         }
         "guide_preview" => {
-            let file_path = args
-                .get("file_path")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
+            let file_path = args.get("file_path").and_then(|v| v.as_str()).unwrap_or("");
 
             match preview_guide(file_path) {
                 Ok(content) => content,
@@ -110,10 +107,7 @@ fn execute_guide_tool(name: &str, args: &serde_json::Value) -> String {
             }
         }
         "guide_read" => {
-            let file_path = args
-                .get("file_path")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
+            let file_path = args.get("file_path").and_then(|v| v.as_str()).unwrap_or("");
 
             match read_guide(file_path) {
                 Ok(content) => content,
@@ -179,9 +173,7 @@ pub async fn search_guide(query: &str) -> Result<String> {
             // Add assistant message with tool calls
             messages.push(Message {
                 role: "assistant".to_string(),
-                content: MessageContent::Text(
-                    choice.message.content.clone().unwrap_or_default(),
-                ),
+                content: MessageContent::Text(choice.message.content.clone().unwrap_or_default()),
             });
 
             // Execute each tool call and add results

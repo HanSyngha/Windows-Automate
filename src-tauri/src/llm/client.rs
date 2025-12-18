@@ -133,7 +133,10 @@ pub async fn test_connection(config: &ApiConfig) -> Result<String> {
     };
 
     let response = client
-        .post(format!("{}/chat/completions", config.endpoint.trim_end_matches('/')))
+        .post(format!(
+            "{}/chat/completions",
+            config.endpoint.trim_end_matches('/')
+        ))
         .header("Authorization", format!("Bearer {}", config.api_key))
         .header("Content-Type", "application/json")
         .json(&request)
@@ -172,7 +175,10 @@ pub async fn chat_completion(
     };
 
     let response = client
-        .post(format!("{}/chat/completions", config.endpoint.trim_end_matches('/')))
+        .post(format!(
+            "{}/chat/completions",
+            config.endpoint.trim_end_matches('/')
+        ))
         .header("Authorization", format!("Bearer {}", config.api_key))
         .header("Content-Type", "application/json")
         .json(&request)

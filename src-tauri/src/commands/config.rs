@@ -49,15 +49,13 @@ impl Default for AppConfig {
 /// Get current configuration
 #[tauri::command]
 pub async fn get_config() -> Result<AppConfig, String> {
-    crate::config::storage::load_config()
-        .map_err(|e| e.to_string())
+    crate::config::storage::load_config().map_err(|e| e.to_string())
 }
 
 /// Save configuration
 #[tauri::command]
 pub async fn save_config(config: AppConfig) -> Result<(), String> {
-    crate::config::storage::save_config(&config)
-        .map_err(|e| e.to_string())
+    crate::config::storage::save_config(&config).map_err(|e| e.to_string())
 }
 
 /// Test API connection

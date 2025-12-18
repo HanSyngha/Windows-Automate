@@ -75,12 +75,10 @@ pub fn list_guides(subpath: Option<&str>) -> Result<Vec<GuideEntry>> {
     }
 
     // Sort: directories first, then alphabetically
-    entries.sort_by(|a, b| {
-        match (a.is_dir, b.is_dir) {
-            (true, false) => std::cmp::Ordering::Less,
-            (false, true) => std::cmp::Ordering::Greater,
-            _ => a.name.cmp(&b.name),
-        }
+    entries.sort_by(|a, b| match (a.is_dir, b.is_dir) {
+        (true, false) => std::cmp::Ordering::Less,
+        (false, true) => std::cmp::Ordering::Greater,
+        _ => a.name.cmp(&b.name),
     });
 
     Ok(entries)
@@ -100,11 +98,7 @@ pub fn preview_guide(path: &str) -> Result<String> {
     }
 
     let content = fs::read_to_string(&file_path)?;
-    let preview: String = content
-        .lines()
-        .take(10)
-        .collect::<Vec<_>>()
-        .join("\n");
+    let preview: String = content.lines().take(10).collect::<Vec<_>>().join("\n");
 
     Ok(preview)
 }

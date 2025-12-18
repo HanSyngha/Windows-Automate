@@ -1,10 +1,10 @@
 // Guide commands - Tauri command handlers for guide system
 
+use crate::guides::search::search_guide;
 use crate::guides::storage::{
     get_guide_index, list_guides, preview_guide, read_guide, save_guide, GuideEntry,
     GuideIndexEntry,
 };
-use crate::guides::search::search_guide;
 use serde::{Deserialize, Serialize};
 
 /// Guide creation request
@@ -64,7 +64,8 @@ pub async fn guide_create(request: CreateGuideRequest) -> Result<CreateGuideResp
     }
 
     // System prompt for guide creation
-    let system_prompt = r#"You are a guide creation assistant. Convert user input into a structured markdown guide.
+    let system_prompt =
+        r#"You are a guide creation assistant. Convert user input into a structured markdown guide.
 
 Output format (JSON):
 {
@@ -102,7 +103,9 @@ Rules:
 - Use descriptive, kebab-case filename
 - Include frontmatter with title, tags, and date
 - Write clear, actionable steps
-- Today's date is: "#.to_string() + &chrono::Local::now().format("%Y-%m-%d").to_string();
+- Today's date is: "#
+            .to_string()
+            + &chrono::Local::now().format("%Y-%m-%d").to_string();
 
     let messages = vec![
         Message {

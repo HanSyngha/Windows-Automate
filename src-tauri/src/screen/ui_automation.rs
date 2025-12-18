@@ -65,7 +65,12 @@ fn build_element_tree(
 
     if depth < max_depth {
         if let Ok(first_child) = walker.get_first_child(element) {
-            children.push(build_element_tree(walker, &first_child, depth + 1, max_depth)?);
+            children.push(build_element_tree(
+                walker,
+                &first_child,
+                depth + 1,
+                max_depth,
+            )?);
 
             let mut sibling = first_child;
             while let Ok(next) = walker.get_next_sibling(&sibling) {
