@@ -160,12 +160,12 @@ function MessageBubble({ message }: { message: Message }) {
           isUser ? 'bg-ai-glow/20' : 'bg-gray-800'
         }`}
       >
-        <p className="text-gray-300 whitespace-pre-wrap">{message.content}</p>
+        <p className="text-gray-300 whitespace-pre-wrap selectable">{message.content}</p>
 
         {message.action && message.action.action !== 'none' && (
           <div className="mt-3 pt-3 border-t border-gray-700">
             <p className="text-xs text-gray-500 mb-1">Action:</p>
-            <code className="text-xs text-ai-glow">
+            <code className="text-xs text-ai-glow selectable">
               {message.action.action}({JSON.stringify(message.action.params)})
             </code>
           </div>
