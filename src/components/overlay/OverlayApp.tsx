@@ -65,7 +65,7 @@ export function OverlayApp() {
   }, [setCursorPosition, setAiControlling, addClickEffect, setStatus]);
 
   return (
-    <div className="w-screen h-screen bg-transparent overflow-hidden">
+    <div className="w-screen h-screen overflow-hidden" style={{ background: 'transparent' }}>
       <CursorGlow />
       <ClickRipple />
       <StatusIndicator />
