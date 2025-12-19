@@ -3,7 +3,6 @@
 use anyhow::Result;
 use base64::{engine::general_purpose::STANDARD, Engine};
 use image::{ImageBuffer, ImageEncoder, Rgba};
-use windows::Win32::Foundation::*;
 use windows::Win32::Graphics::Gdi::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
 

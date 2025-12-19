@@ -1,36 +1,58 @@
-// Guide search - Sub-LLM agent for autonomous guide exploration
+// Guide search sub-agent - uses LLM to autonomously search guides
 
-use crate::config::storage::load_config;
 use crate::guides::storage::{list_guides, preview_guide, read_guide, GuideEntry};
-use crate::llm::client::{chat_completion, FunctionDef, Message, MessageContent, Tool};
+use crate::llm::client::chat_completion;
+use crate::llm::prompts::GUIDE_SEARCH_AGENT_PROMPT;
+use crate::llm::tools::Tool;
+use crate::llm::types::{
+    FunctionDef, Message, MessageContent, ToolContext, ToolDef, ToolResult,
+};
 use anyhow::Result;
-use serde_json::json;
+use async_trait::async_trait;
+use serde_json::{json, Value};
 
-/// System prompt for the guide search sub-agent
-const GUIDE_SEARCH_SYSTEM_PROMPT: &str = r#"You are a guide search agent. Your task is to find relevant guides based on the user's query.
+/// Guide search agent tool - appears as a tool to the main agent
+pub struct GuideSearchAgentTool;
 
-You have access to the following tools:
-- guide_ls(path): List guides in a directory. Use "" or omit path to list root folders.
-- guide_preview(file_path): Read first 10 lines of a guide file.
-- guide_read(file_path): Read the full content of a guide file.
+#[async_trait]
+impl Tool for GuideSearchAgentTool {
+    fn name(&self) -> &str {
+        "guide_search"
+    }
 
-Search Strategy:
-1. Use guide_ls() to see available folders (categories like websites/, applications/, workflows/)
-2. Based on the query, identify which folder might contain relevant guides
-3. Use guide_ls("folder_name/") to see files in that folder
-4. Use guide_preview to check if a file matches the query
-5. If it matches, use guide_read to get the full content
+    fn description(&self) -> &str {
+        "Search for relevant guides to help with the current task. A sub-agent will autonomously search and return guide content or '없음' if not found."
+    }
 
-Response Rules:
-- If you find a relevant guide, respond with the FULL guide content only (no extra text)
-- If no relevant guide exists, respond with exactly: 없음
-- Do not add explanations or commentary to your response
-- Be efficient - don't read files that are clearly unrelated based on their names"#;
+    fn parameters(&self) -> Value {
+        json!({
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search query describing what you need help with (e.g., 'YouTube upload', 'VSCode shortcuts')"
+                }
+            },
+            "required": ["query"]
+        })
+    }
 
-/// Get tools for the guide search sub-agent
-fn get_guide_tools() -> Vec<Tool> {
+    async fn execute(&self, params: Value, ctx: &ToolContext) -> anyhow::Result<ToolResult> {
+        let query = params["query"]
+            .as_str()
+            .ok_or_else(|| anyhow::anyhow!("Missing query"))?;
+
+        match run_guide_search_agent(query, ctx).await {
+            Ok(result) => Ok(ToolResult::success(result)),
+            Err(e) => Ok(ToolResult::error(e.to_string())),
+        }
+    }
+}
+
+/// Get tools available to the guide search sub-agent
+fn get_guide_tools() -> Vec<ToolDef> {
     vec![
-        Tool {
+        ToolDef {
             tool_type: "function".to_string(),
             function: FunctionDef {
                 name: "guide_ls".to_string(),
@@ -47,7 +69,7 @@ fn get_guide_tools() -> Vec<Tool> {
                 }),
             },
         },
-        Tool {
+        ToolDef {
             tool_type: "function".to_string(),
             function: FunctionDef {
                 name: "guide_preview".to_string(),
@@ -64,7 +86,7 @@ fn get_guide_tools() -> Vec<Tool> {
                 }),
             },
         },
-        Tool {
+        ToolDef {
             tool_type: "function".to_string(),
             function: FunctionDef {
                 name: "guide_read".to_string(),
@@ -85,7 +107,7 @@ fn get_guide_tools() -> Vec<Tool> {
 }
 
 /// Execute a guide tool call
-fn execute_guide_tool(name: &str, args: &serde_json::Value) -> String {
+fn execute_guide_tool(name: &str, args: &Value) -> String {
     match name {
         "guide_ls" => {
             let path = args
@@ -137,31 +159,27 @@ fn format_ls_result(entries: &[GuideEntry]) -> String {
         .join("\n")
 }
 
-/// Search for guides using Sub-LLM agent
-pub async fn search_guide(query: &str) -> Result<String> {
-    let config = load_config()?;
-
-    if config.api.api_key.is_empty() {
-        return Err(anyhow::anyhow!("API key not configured"));
-    }
-
+/// Run the guide search sub-agent loop
+async fn run_guide_search_agent(query: &str, ctx: &ToolContext) -> Result<String> {
     let tools = get_guide_tools();
 
     // Initial messages
     let mut messages = vec![
         Message {
             role: "system".to_string(),
-            content: MessageContent::Text(GUIDE_SEARCH_SYSTEM_PROMPT.to_string()),
+            content: MessageContent::Text(GUIDE_SEARCH_AGENT_PROMPT.to_string()),
+            tool_call_id: None,
         },
         Message {
             role: "user".to_string(),
             content: MessageContent::Text(format!("Find a guide for: {}", query)),
+            tool_call_id: None,
         },
     ];
 
     // Agent loop - max 10 iterations to prevent infinite loops
     for _ in 0..10 {
-        let response = chat_completion(&config.api, messages.clone(), Some(tools.clone())).await?;
+        let response = chat_completion(&ctx.api_config, messages.clone(), Some(tools.clone())).await?;
 
         let choice = response
             .choices
@@ -174,11 +192,12 @@ pub async fn search_guide(query: &str) -> Result<String> {
             messages.push(Message {
                 role: "assistant".to_string(),
                 content: MessageContent::Text(choice.message.content.clone().unwrap_or_default()),
+                tool_call_id: None,
             });
 
             // Execute each tool call and add results
             for tool_call in tool_calls {
-                let args: serde_json::Value =
+                let args: Value =
                     serde_json::from_str(&tool_call.function.arguments).unwrap_or(json!({}));
 
                 let result = execute_guide_tool(&tool_call.function.name, &args);
@@ -186,6 +205,7 @@ pub async fn search_guide(query: &str) -> Result<String> {
                 messages.push(Message {
                     role: "tool".to_string(),
                     content: MessageContent::Text(result),
+                    tool_call_id: Some(tool_call.id.clone()),
                 });
             }
         } else {

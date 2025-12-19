@@ -195,8 +195,12 @@ automate/
 │   │   ├── config/         # Configuration
 │   │   ├── screen/         # Screen Capture & UI Automation
 │   │   ├── input/          # Mouse & Keyboard Control
-│   │   ├── llm/            # LLM Client & Agent
-│   │   └── guides/         # Guide System
+│   │   ├── llm/            # LLM Integration
+│   │   │   ├── prompts/    # System prompts
+│   │   │   ├── tools/      # Primitive tools (mouse, keyboard)
+│   │   │   ├── agents/     # Sub-agents (guide search)
+│   │   │   └── runner/     # Agent loop & executor
+│   │   └── guides/         # Guide Storage
 │   └── Cargo.toml
 ├── docs/                   # Documentation
 └── guides/                 # User Guides Storage

@@ -1,6 +1,6 @@
 [package]
 name = "automate"
-version = "0.2.0"
+version = "0.3.0"
 description = "AI-powered Windows automation assistant"
 authors = ["AutoMate"]
 edition = "2021"
@@ -29,6 +29,8 @@ thiserror = "2"
 anyhow = "1"
 dirs = "5"
 chrono = "0.4"
+async-trait = "0.1"
+lazy_static = "1.4"
 
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.62", features = [

@@ -181,23 +181,64 @@ automate/
 
 #### LLM 모듈 (`src-tauri/src/llm/`)
 
-AI API 통신 및 에이전트 로직.
+AI API 통신 및 에이전트 로직. 모듈화된 구조로 확장 용이.
+
+| 파일 | 설명 |
+|------|------|
+| `mod.rs` | 모듈 내보내기 및 re-export |
+| `types.rs` | 공통 타입 정의 (Message, ToolDef, ActionResponse 등) |
+| `client.rs` | OpenAI 호환 API 클라이언트, HTTP 요청 처리 |
+
+##### Prompts 서브모듈 (`llm/prompts/`)
+
+시스템 프롬프트 관리.
 
 | 파일 | 설명 |
 |------|------|
 | `mod.rs` | 모듈 내보내기 |
-| `client.rs` | OpenAI 호환 API 클라이언트, HTTP 요청 처리 |
-| `agent.rs` | AI 에이전트 로직, 액션 파싱 및 실행 |
+| `system.rs` | 메인 에이전트 및 서브 에이전트용 시스템 프롬프트 |
+| `builder.rs` | 동적 프롬프트 빌더 (가이드 인덱스 포함) |
+
+##### Tools 서브모듈 (`llm/tools/`)
+
+단순 도구들 (시스템 함수 직접 호출).
+
+| 파일 | 설명 |
+|------|------|
+| `mod.rs` | Tool trait 정의 |
+| `registry.rs` | 도구 레지스트리 |
+| `mouse.rs` | 마우스 도구 (move, click, double_click) |
+| `keyboard.rs` | 키보드 도구 (type, press) |
+| `screen.rs` | 화면 도구 (screen_update, wait) |
+| `scroll.rs` | 스크롤 도구 |
+
+##### Agents 서브모듈 (`llm/agents/`)
+
+Sub-agent 도구들 (내부에서 LLM 루프 실행).
+
+| 파일 | 설명 |
+|------|------|
+| `mod.rs` | 모듈 내보내기 |
+| `guide_search.rs` | 가이드 검색 서브 에이전트 (최대 10회 반복) |
+
+##### Runner 서브모듈 (`llm/runner/`)
+
+메인 에이전트 루프 및 도구 실행.
+
+| 파일 | 설명 |
+|------|------|
+| `mod.rs` | 모듈 내보내기 |
+| `executor.rs` | 도구 실행기 (모든 도구를 이름으로 실행) |
+| `agent_loop.rs` | 메인 에이전트 루프 (LLM 호출 → 도구 실행 → 결과 피드백 → 반복) |
 
 #### Guides 모듈 (`src-tauri/src/guides/`)
 
-가이드 문서 저장 및 검색.
+가이드 문서 저장.
 
 | 파일 | 설명 |
 |------|------|
 | `mod.rs` | 모듈 내보내기 |
 | `storage.rs` | 마크다운 가이드 파일 CRUD |
-| `search.rs` | 가이드 내용 검색 기능 |
 
 #### Config 모듈 (`src-tauri/src/config/`)
 

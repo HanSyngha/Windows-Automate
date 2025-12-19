@@ -1,11 +1,14 @@
 // Guide commands - Tauri command handlers for guide system
 
-use crate::guides::search::search_guide;
 use crate::guides::storage::{
     get_guide_index, list_guides, preview_guide, read_guide, save_guide, GuideEntry,
     GuideIndexEntry,
 };
+use crate::llm::agents::GuideSearchAgentTool;
+use crate::llm::tools::Tool;
+use crate::llm::types::ToolContext;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 /// Guide creation request
 #[derive(Debug, Deserialize)]
@@ -47,7 +50,25 @@ pub async fn guide_index() -> Result<Vec<GuideIndexEntry>, String> {
 /// Search guides using Sub-LLM agent
 #[tauri::command]
 pub async fn guide_search(query: String) -> Result<String, String> {
-    search_guide(&query).await.map_err(|e| e.to_string())
+    let config = crate::config::storage::load_config().map_err(|e| e.to_string())?;
+
+    let ctx = ToolContext {
+        api_config: config.api,
+    };
+
+    let tool = GuideSearchAgentTool;
+    let params = json!({ "query": query });
+
+    let result = tool
+        .execute(params, &ctx)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if result.success {
+        Ok(result.output)
+    } else {
+        Err(result.error.unwrap_or_else(|| "Unknown error".to_string()))
+    }
 }
 
 /// Create a new guide from user input
@@ -55,7 +76,8 @@ pub async fn guide_search(query: String) -> Result<String, String> {
 #[tauri::command]
 pub async fn guide_create(request: CreateGuideRequest) -> Result<CreateGuideResponse, String> {
     use crate::config::storage::load_config;
-    use crate::llm::client::{chat_completion, Message, MessageContent};
+    use crate::llm::client::chat_completion;
+    use crate::llm::types::{Message, MessageContent};
 
     let config = load_config().map_err(|e| e.to_string())?;
 
@@ -111,10 +133,12 @@ Rules:
         Message {
             role: "system".to_string(),
             content: MessageContent::Text(system_prompt),
+            tool_call_id: None,
         },
         Message {
             role: "user".to_string(),
             content: MessageContent::Text(request.user_input),
+            tool_call_id: None,
         },
     ];
 

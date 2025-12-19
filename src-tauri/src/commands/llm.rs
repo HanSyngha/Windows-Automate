@@ -1,31 +1,31 @@
 // LLM interaction commands
 
-use serde::{Deserialize, Serialize};
+use crate::llm::runner::AgentResult;
+use crate::llm::types::ActionResponse;
 
-/// Chat message
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChatMessage {
-    pub role: String,
-    pub content: String,
-}
-
-/// LLM action response
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ActionResponse {
-    pub thought: String,
-    pub action: String,
-    pub params: serde_json::Value,
-}
-
-/// Send message to LLM and get action response
+/// Send message to LLM and run full agent loop
+/// Returns complete execution result with all steps
 #[tauri::command]
 pub async fn send_message(
+    message: &str,
+    include_screen: Option<bool>,
+) -> Result<AgentResult, String> {
+    let with_screen = include_screen.unwrap_or(true);
+
+    crate::llm::runner::run_agent_loop(message, with_screen)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Legacy single-turn message (for backward compatibility)
+#[tauri::command]
+pub async fn send_message_single(
     message: &str,
     include_screen: Option<bool>,
 ) -> Result<ActionResponse, String> {
     let with_screen = include_screen.unwrap_or(true);
 
-    crate::llm::agent::process_message(message, with_screen)
+    crate::llm::process_message(message, with_screen)
         .await
         .map_err(|e| e.to_string())
 }
