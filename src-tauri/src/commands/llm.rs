@@ -18,6 +18,7 @@ pub async fn send_message(
 }
 
 /// Legacy single-turn message (for backward compatibility)
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn send_message_single(
     message: &str,

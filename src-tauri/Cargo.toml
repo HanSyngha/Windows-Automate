@@ -1,6 +1,6 @@
 [package]
 name = "automate"
-version = "0.3.0"
+version = "0.3.1"
 description = "AI-powered Windows automation assistant"
 authors = ["AutoMate"]
 edition = "2021"

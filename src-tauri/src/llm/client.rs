@@ -24,6 +24,7 @@ pub struct ChatRequest {
 pub struct ChatResponse {
     pub choices: Vec<Choice>,
     #[serde(default)]
+    #[allow(dead_code)]
     pub usage: Option<Usage>,
 }
 
@@ -31,12 +32,14 @@ pub struct ChatResponse {
 #[derive(Debug, Deserialize)]
 pub struct Choice {
     pub message: ResponseMessage,
+    #[allow(dead_code)]
     pub finish_reason: Option<String>,
 }
 
 /// Response message
 #[derive(Debug, Deserialize)]
 pub struct ResponseMessage {
+    #[allow(dead_code)]
     pub role: String,
     #[serde(default)]
     pub content: Option<String>,
@@ -45,6 +48,7 @@ pub struct ResponseMessage {
 }
 
 /// Token usage
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Usage {
     pub prompt_tokens: u32,

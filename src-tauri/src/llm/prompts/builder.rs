@@ -34,6 +34,7 @@ pub fn build_main_agent_prompt() -> String {
 }
 
 /// Prompt builder with customization options
+#[allow(dead_code)]
 pub struct PromptBuilder {
     base_prompt: String,
     tools_description: Option<String>,

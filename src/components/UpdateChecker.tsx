@@ -21,20 +21,29 @@ export function UpdateChecker() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    checkForUpdates();
+    // Delay check to ensure app is fully loaded
+    const timer = setTimeout(() => {
+      checkForUpdates();
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const checkForUpdates = async () => {
     try {
+      console.log('[UpdateChecker] Checking for updates...');
       const update = await check();
+      console.log('[UpdateChecker] Update check result:', update);
       if (update?.available) {
+        console.log('[UpdateChecker] Update available:', update.version);
         setUpdateAvailable({
           version: update.version,
           body: update.body,
         });
+      } else {
+        console.log('[UpdateChecker] No update available or already up to date');
       }
     } catch (error) {
-      console.error('Failed to check for updates:', error);
+      console.error('[UpdateChecker] Failed to check for updates:', error);
     }
   };
 
@@ -43,19 +52,22 @@ export function UpdateChecker() {
 
     try {
       setIsDownloading(true);
+      console.log('[UpdateChecker] Starting download...');
       const update = await check();
 
       if (update?.available) {
+        let downloaded = 0;
         await update.downloadAndInstall((progress: DownloadEvent) => {
           if (progress.event === 'Progress') {
             const data = progress.data as { chunkLength?: number; contentLength?: number };
-            const percent = Math.round(
-              ((data.chunkLength || 0) / (data.contentLength || 1)) * 100
-            );
+            downloaded += data.chunkLength || 0;
+            const total = data.contentLength || 1;
+            const percent = Math.min(100, Math.round((downloaded / total) * 100));
             setDownloadProgress(percent);
           }
         });
 
+        console.log('[UpdateChecker] Download complete, installing...');
         setIsDownloading(false);
         setIsInstalling(true);
 
@@ -63,7 +75,7 @@ export function UpdateChecker() {
         await relaunch();
       }
     } catch (error) {
-      console.error('Failed to download update:', error);
+      console.error('[UpdateChecker] Failed to download update:', error);
       setIsDownloading(false);
     }
   };

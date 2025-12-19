@@ -29,7 +29,7 @@ pub fn capture_screen_base64() -> Result<String> {
         // Create compatible bitmap
         let hbitmap = CreateCompatibleBitmap(hdc_screen, width, height);
         if hbitmap.is_invalid() {
-            DeleteDC(hdc_mem);
+            let _ = DeleteDC(hdc_mem);
             ReleaseDC(None, hdc_screen);
             return Err(anyhow::anyhow!("Failed to create bitmap"));
         }
@@ -68,7 +68,7 @@ pub fn capture_screen_base64() -> Result<String> {
 
         // Cleanup
         SelectObject(hdc_mem, old_bitmap);
-        DeleteDC(hdc_mem);
+        let _ = DeleteDC(hdc_mem);
         ReleaseDC(None, hdc_screen);
 
         // Convert BGRA to RGBA

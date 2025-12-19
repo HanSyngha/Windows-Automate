@@ -139,6 +139,7 @@ pub fn click(x: i32, y: i32, button: MouseButton, double: bool) -> Result<()> {
 }
 
 /// Get current cursor position
+#[allow(dead_code)]
 pub fn get_position() -> Result<(i32, i32)> {
     unsafe {
         let mut point = POINT::default();

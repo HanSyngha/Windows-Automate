@@ -59,6 +59,7 @@ pub struct FunctionDef {
 pub struct ToolCall {
     pub id: String,
     #[serde(rename = "type")]
+    #[allow(dead_code)]
     pub call_type: String,
     pub function: FunctionCall,
 }

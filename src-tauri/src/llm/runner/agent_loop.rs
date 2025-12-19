@@ -246,6 +246,7 @@ pub async fn run_agent_loop(user_message: &str, include_screen: bool) -> Result<
 
 /// Legacy single-turn function for backward compatibility
 /// This calls the new loop but returns only the first action
+#[allow(dead_code)]
 pub async fn process_message(user_message: &str, include_screen: bool) -> Result<ActionResponse> {
     let result = run_agent_loop(user_message, include_screen).await?;
 

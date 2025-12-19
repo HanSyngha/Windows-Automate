@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Registry of all available tools
+#[allow(dead_code)]
 pub struct ToolRegistry {
     tools: HashMap<String, Arc<dyn Tool>>,
 }

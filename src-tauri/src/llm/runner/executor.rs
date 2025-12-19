@@ -52,11 +52,13 @@ impl ToolExecutor {
     }
 
     /// Check if a tool exists
+    #[allow(dead_code)]
     pub fn has_tool(&self, name: &str) -> bool {
         self.tools.contains_key(name)
     }
 
     /// Get all tool names
+    #[allow(dead_code)]
     pub fn list_tools(&self) -> Vec<&str> {
         self.tools.keys().map(|s| s.as_str()).collect()
     }
