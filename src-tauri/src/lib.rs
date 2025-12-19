@@ -10,12 +10,21 @@ mod screen;
 
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::Manager;
+use tauri::{Manager, WindowEvent};
 
 /// Application entry point
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Single instance plugin (must be first)
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            // Another instance tried to start - show and focus our window
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.unminimize();
+                let _ = window.set_focus();
+            }
+        }))
         // Plugins
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_os::init())
@@ -98,6 +107,18 @@ pub fn run() {
             commands::overlay::overlay_status,
             commands::overlay::overlay_set_control,
         ])
+        // Window events - hide instead of close to support tray
+        .on_window_event(|window, event| {
+            if let WindowEvent::CloseRequested { api, .. } = event {
+                // Only intercept main window close
+                if window.label() == "main" {
+                    // Hide the window instead of closing
+                    let _ = window.hide();
+                    // Prevent the window from actually closing
+                    api.prevent_close();
+                }
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
